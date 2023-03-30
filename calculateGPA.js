@@ -1,13 +1,22 @@
 "use strict";
 
 class Student {
-  constructor(firstName, lastName, birthYear, registeredCourses) {
+  constructor(
+    firstName,
+    lastName,
+    birthYear,
+    registeredCourses,
+    currentPart,
+    currentSemester
+  ) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.birthYear = birthYear;
     this.registeredCourses = registeredCourses;
     this.age = this.calcAge();
     this.fullName = this.getFullName();
+    this.currentPart = currentPart;
+    this.currentSemester = currentSemester;
     // this.scoreSheet = this.generateRandomScores();
     this.scoreSheet = this.inputExamScores();
     this.points = this.getCoursePoint(this.scoreSheet);
@@ -64,7 +73,10 @@ class Student {
   getCourseUnit(course) {
     let courseUnit = [];
     for (let i = 0; i < course.length; i++) {
-      courseUnit[i] = courseUnits[course[i]];
+      // courseUnit[i] = courseUnits[course[i]];
+      courseUnit[i] =
+        // courseUnits[this.currentPart][this.currentSemester][course[i]];
+        courseUnits[this.currentPart][this.currentSemester][course[i]];
     }
     return courseUnit;
   }
@@ -82,21 +94,64 @@ class Student {
 }
 
 const courseUnits = {
-  MTH101: 5,
-  PHY101: 4,
-  CHM101: 4,
-  CHM103: 1,
-  PHY107: 1,
-  CSC101: 2,
-  SER001: 1,
-  TPD101: 1,
+  part_1: {
+    rain_semester: {
+      MTH102: 5,
+      PHY102: 4,
+      CHM102: 4,
+      PHY108: 1,
+      CHM104: 1,
+      MTH104: 3,
+      LIB001: 0,
+      SER001: 0,
+      CSC102: 1,
+    },
+    harmattan_semester: {
+      MTH101: 5,
+      PHY101: 4,
+      CHM101: 4,
+      CHM103: 1,
+      PHY107: 1,
+      CSC101: 2,
+      SER001: 1,
+      TPD101: 1,
+    },
+  },
+  part_2: {
+    rain_semester: {
+      MTH202: 5,
+      PHY202: 4,
+      CHM202: 4,
+      PHY208: 1,
+      CHM204: 1,
+      MTH204: 3,
+      CSC202: 1,
+    },
+    harmattan_semester: {
+      MTH201: 5,
+      PHY201: 4,
+      CHM201: 4,
+      CHM203: 1,
+      PHY207: 1,
+      CSC201: 2,
+    },
+  },
 };
 
 const userInput = require("prompt-sync")({ sigint: true }); //Come-back to this....I don't understand YET!!
-let firstName = userInput("Please enter your First name: ");
-let lastName = userInput("Please enter your Surname: ");
-let birthYear = userInput("Please enter your birth year: ");
+const firstName = userInput("Please enter your First name: ");
+const lastName = userInput("Please enter your Surname: ");
+const birthYear = userInput("Please enter your birth year: ");
+let currentPart = userInput("Please enter your current part: ");
+let currentSemester = userInput(
+  "Please enter current semester (Enter Rain or Harmattan): "
+);
 let courseList = userInput("Please input registered courses: ");
+
+currentPart = currentPart.split(" ").join("_");
+currentPart = currentPart.toLocaleLowerCase();
+currentSemester = currentSemester.toLowerCase();
+currentSemester = `${currentSemester}_semester`;
 
 courseList = courseList.toUpperCase().replaceAll(",", " ").trim().split(" ");
 let registeredCourses = [];
@@ -107,5 +162,12 @@ for (let i = 0; i < courseList.length; i++) {
   }
 }
 
-let philip = new Student(firstName, lastName, birthYear, registeredCourses);
-console.log(`GPA: ${philip.GPA}`);
+let philip = new Student(
+  firstName,
+  lastName,
+  birthYear,
+  registeredCourses,
+  currentPart,
+  currentSemester
+);
+console.log(philip);
